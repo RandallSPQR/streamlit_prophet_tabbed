@@ -10,16 +10,14 @@ def input_dataset(
     config: Dict[Any, Any], readme: Dict[Any, Any], instructions: Dict[Any, Any]
 ) -> Tuple[pd.DataFrame, Dict[Any, Any], Dict[Any, Any], Dict[Any, Any]]:
     """Lets the user decide whether to upload a dataset or download a toy dataset.
-
     Parameters
     ----------
     config : Dict
-        Lib config dictionary containing information about toy datasets (download links). REMOVED
+        Lib config dictionary containing information about toy datasets (download links).
     readme : Dict
         Dictionary containing tooltips to guide user's choices.
     instructions : Dict
         Dictionary containing instructions to provide a custom config.
-
     Returns
     -------
     pd.DataFrame
@@ -35,41 +33,52 @@ def input_dataset(
     load_options["toy_dataset"] = st.checkbox(
         "Load a toy dataset", True, help=readme["tooltips"]["upload_choice"]
     )
-    
-    file = st.file_uploader(
-         "Upload a csv file", type="csv", help=readme["tooltips"]["dataset_upload"]
-    )
-    load_options["separator"] = st.selectbox(
-         "What is the separator?", [",", ";", "|"], help=readme["tooltips"]["separator"]
-    )
-    load_options["date_format"] = st.text_input(
-         "What is the date format?",
-         config["dataprep"]["date_format"],
-         help=readme["tooltips"]["date_format"],
-    )
-    if st.checkbox(
-         "Upload my own config file", False, help=readme["tooltips"]["custom_config_choice"]
-    ):
-         with st.sidebar.expander("Configuration", expanded=True):
-             display_config_download_links(
-                 config,
-                 "config.toml",
-                 "Template",
-                 instructions,
-                 "instructions.toml",
-                 "Instructions",
-            )
-             config_file = st.file_uploader(
-                 "Upload custom config", type="toml", help=readme["tooltips"]["custom_config"]
-            )
-             if config_file:
-                 config = load_custom_config(config_file)
-             else:
-                 st.stop()
-    if file:
-         df = load_dataset(file, load_options)
+    if load_options["toy_dataset"]:
+        dataset_name = st.selectbox(
+            "Select a toy dataset",
+            options=list(config["datasets"].keys()),
+            format_func=lambda x: config["datasets"][x]["name"],
+            help=readme["tooltips"]["toy_dataset"],
+        )
+        df = download_toy_dataset(config["datasets"][dataset_name]["url"])
+        load_options["dataset"] = dataset_name
+        load_options["date_format"] = config["dataprep"]["date_format"]
+        load_options["separator"] = ","
     else:
-         st.stop()
+        file = st.file_uploader(
+            "Upload a csv file", type="csv", help=readme["tooltips"]["dataset_upload"]
+        )
+        load_options["separator"] = st.selectbox(
+            "What is the separator?", [",", ";", "|"], help=readme["tooltips"]["separator"]
+        )
+        load_options["date_format"] = st.text_input(
+            "What is the date format?",
+            config["dataprep"]["date_format"],
+            help=readme["tooltips"]["date_format"],
+        )
+        if st.checkbox(
+            "Upload my own config file", False, help=readme["tooltips"]["custom_config_choice"]
+        ):
+            with st.sidebar.expander("Configuration", expanded=True):
+                display_config_download_links(
+                    config,
+                    "config.toml",
+                    "Template",
+                    instructions,
+                    "instructions.toml",
+                    "Instructions",
+                )
+                config_file = st.file_uploader(
+                    "Upload custom config", type="toml", help=readme["tooltips"]["custom_config"]
+                )
+                if config_file:
+                    config = load_custom_config(config_file)
+                else:
+                    st.stop()
+        if file:
+            df = load_dataset(file, load_options)
+        else:
+            st.stop()
     datasets["uploaded"] = df.copy()
     return df, load_options, config, datasets
 
