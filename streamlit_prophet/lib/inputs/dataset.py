@@ -94,6 +94,18 @@ def input_columns(
     str
         Target column name.
     """
+    if load_options["toy_dataset"]:
+        date_col = st.selectbox(
+            "Date column",
+            [config["datasets"][load_options["dataset"]]["date"]],
+            help=readme["tooltips"]["date_column"],
+        )
+        target_col = st.selectbox(
+            "Target column",
+            [config["datasets"][load_options["dataset"]]["target"]],
+            help=readme["tooltips"]["target_column"],
+        )
+    else:
     date_col = st.selectbox(
          "Date column",
          sorted(df.columns)
