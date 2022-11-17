@@ -40,14 +40,7 @@ custom_config_choice = """
 dataset_upload = """
 Your csv file should have at least a column with dates and a column with numeric values to forecast.
 """
-toy_dataset = """
-Five toy datasets are available:
-* __Retail sales__: Sales from Walmart stores (daily)
-* __House sales__: House sales in London boroughs (monthly)
-* __Energy consumption__: Households energy consumption (daily)
-* __Weather__: Temperature in Madrid (hourly)
-* __Commodity prices__: Corn price in USD per bushel (weekly)
-"""
+
 date_format = """
 For example "%Y-%m-%d" or "%d/%m/%Y %H:%M:%S".
 """
