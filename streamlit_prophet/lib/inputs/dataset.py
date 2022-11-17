@@ -3,7 +3,7 @@ from typing import Any, Dict, Tuple
 import pandas as pd
 import streamlit as st
 from streamlit_prophet.lib.exposition.export import display_config_download_links
-from streamlit_prophet.lib.utils.load import load_custom_config, load_dataset
+from streamlit_prophet.lib.utils.load import download_toy_dataset, load_custom_config, load_dataset
 
 
 def input_dataset(
@@ -32,6 +32,9 @@ def input_dataset(
         Dictionary containing all datasets.
     """
     load_options, datasets = dict(), dict()
+    load_options["toy_dataset"] = st.checkbox(
+        "Load a toy dataset", True, help=readme["tooltips"]["upload_choice"]
+    )
     
     file = st.file_uploader(
          "Upload a csv file", type="csv", help=readme["tooltips"]["dataset_upload"]
@@ -106,19 +109,19 @@ def input_columns(
             help=readme["tooltips"]["target_column"],
         )
     else:
-    date_col = st.selectbox(
-         "Date column",
-         sorted(df.columns)
-         if config["columns"]["date"] in ["false", False]
-         else [config["columns"]["date"]],
-         help=readme["tooltips"]["date_column"],
+        date_col = st.selectbox(
+            "Date column",
+            sorted(df.columns)
+            if config["columns"]["date"] in ["false", False]
+            else [config["columns"]["date"]],
+            help=readme["tooltips"]["date_column"],
         )
-    target_col = st.selectbox(
-         "Target column",
-         sorted(set(df.columns) - {date_col})
-         if config["columns"]["target"] in ["false", False]
-         else [config["columns"]["target"]],
-         help=readme["tooltips"]["target_column"],
+        target_col = st.selectbox(
+            "Target column",
+            sorted(set(df.columns) - {date_col})
+            if config["columns"]["target"] in ["false", False]
+            else [config["columns"]["target"]],
+            help=readme["tooltips"]["target_column"],
         )
     return date_col, target_col
 
