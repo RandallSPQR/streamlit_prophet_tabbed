@@ -76,23 +76,6 @@ def load_config(
     return dict(config_streamlit), dict(config_instructions), dict(config_readme)
 
 
-@st.cache(ttl=300)
-def download_toy_dataset(url: str) -> pd.DataFrame:
-    """Downloads a toy dataset from an external source and converts it into a pandas dataframe.
-
-    Parameters
-    ----------
-    url : str
-        Link to the toy dataset.
-
-    Returns
-    -------
-    pd.DataFrame
-        Loaded dataset.
-    """
-    download = requests.get(url).content
-    df = pd.read_csv(io.StringIO(download.decode("utf-8")))
-    return df
 
 
 @st.cache(ttl=300)
