@@ -32,9 +32,6 @@ def input_dataset(
         Dictionary containing all datasets.
     """
     load_options, datasets = dict(), dict()
-    load_options["toy_dataset"] = st.checkbox(
-        "Load a toy dataset", True, help=readme["tooltips"]["upload_choice"]
-    )
     
     file = st.file_uploader(
          "Upload a csv file", type="csv", help=readme["tooltips"]["dataset_upload"]
